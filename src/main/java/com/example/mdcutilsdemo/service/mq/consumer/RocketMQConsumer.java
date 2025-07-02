@@ -1,10 +1,13 @@
 package com.example.mdcutilsdemo.service.mq.consumer;
 
 import com.example.mdcutilsdemo.entity.User;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class RocketMQConsumer {
 
@@ -14,13 +17,13 @@ public class RocketMQConsumer {
     @Service
     @RocketMQMessageListener(
             topic = "TEST_TOPIC",
-            consumerGroup = "my-group",
+            consumerGroup = "my-consumer-group",
             selectorExpression = "*"  // 消费所有Tag
     )
     public class SimpleConsumer implements RocketMQListener<String> {
         @Override
         public void onMessage(String message) {
-            System.out.println("收到消息: " + message);
+            log.info("收到消息: " + message);
             // 处理业务逻辑
         }
     }

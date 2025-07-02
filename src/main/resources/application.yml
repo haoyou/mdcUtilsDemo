@@ -54,13 +54,23 @@ mybatis:
 rocketmq:
   name-server: 192.168.152.128:9876  # NameServer 地址（根据实际修改）
   producer:
-    group: my-group  # 生产者组名
+    group: my-producer-group  # 生产者组名
     send-message-timeout: 3000  # 发送超时时间(ms)
     retry-times-when-send-failed: 2  # 失败重试次数
   consumer:
-    group: my-group  # 消费者组名
+    group: my-consumer-group  # 消费者组名
     message-model: CLUSTERING  # 消费模式（CLUSTERING | BROADCASTING）
 #    access-key: your-access-key  # 阿里云账号AccessKey（可选）
 #    secret-key: your-secret-key  # 阿里云账号SecretKey（可选）
+payment:
+  gateway:
+    url: https://api.payment-gateway.com/v1
+  api:
+    key: 1234567890
+# RestTemplate 超时配置
+rest:
+  template:
+    connect-timeout: 5000    # 连接超时(ms)
+    read-timeout: 10000      # 读取超时(ms)
 
 

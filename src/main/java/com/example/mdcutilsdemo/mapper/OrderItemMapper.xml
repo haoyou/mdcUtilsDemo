@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mdcutilsdemo.mapper.OrderItemMapper">
+    <resultMap id="BaseResultMap" type="com.example.mdcutilsdemo.entity.OrderItem">
+        <id column="item_id" property="itemId" jdbcType="BIGINT"/>
+        <result column="order_id" property="orderId" jdbcType="BIGINT"/>
+        <result column="product_id" property="productId" jdbcType="BIGINT"/>
+        <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+        <result column="quantity" property="quantity" jdbcType="INTEGER"/>
+        <result column="price" property="price" jdbcType="DECIMAL"/>
+    </resultMap>
+
+    <insert id="batchInsert" useGeneratedKeys="true" keyProperty="itemId">
+        INSERT INTO t_order_item (
+        order_id,
+        product_id,
+        product_name,
+        quantity,
+        price
+        ) VALUES
+        <foreach collection="items" item="item" separator=",">
+            (#{item.orderId},
+            #{item.productId},
+            #{item.productName},
+            #{item.quantity},
+            #{item.price})
+        </foreach>
+    </insert>
+
+    <select id="selectItemsByOrderId" resultMap="BaseResultMap">
+        SELECT
+            item_id,
+            order_id,
+            product_id,
+            product_name,
+            quantity,
+            price
+        FROM t_order_item
+        WHERE order_id = #{orderId}
+    </select>
+</mapper>
