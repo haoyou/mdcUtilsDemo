@@ -1,0 +1,38 @@
+<assembly>
+    <id>distribution</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <!-- 原有JAR打包配置 -->
+        <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory>/lib</outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+        </fileSet>
+
+        <!-- 新增配置文件打包配置 -->
+        <fileSet>
+            <directory>src/main/resources</directory> <!-- 配置文件路径 -->
+            <outputDirectory>/config</outputDirectory> <!-- 输出目录 -->
+            <includes>
+                <include>*.properties</include> <!-- 包含属性文件 -->
+                <include>*.xml</include>       <!-- 包含XML配置文件 -->
+            </includes>
+<!--            <filtering>true</filtering> &lt;!&ndash; 启用变量替换（可选） &ndash;&gt;-->
+        </fileSet>
+        <!-- 新增：打包bin目录和启动脚本 -->
+        <fileSet>
+            <directory>src/main/bin</directory>
+            <outputDirectory>/bin</outputDirectory>
+            <includes>
+                <include>startup.sh</include>
+                <!-- 新增 status.sh 包含规则 -->
+                <include>status.sh</include>
+            </includes>
+            <fileMode>0755</fileMode>  <!-- 设置可执行权限 -->
+        </fileSet>
+    </fileSets>
+</assembly>

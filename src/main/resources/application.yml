@@ -1,0 +1,66 @@
+spring:
+  redis:
+    host: 192.168.152.128  # Redis 服务器地址
+    port: 6379       # Redis 端口
+    password: # 密码（无密码可省略）
+    database: 0      # 使用的数据库索引
+    lettuce:
+      pool:
+        max-active: 8 # 连接池最大连接数
+        max-idle: 8   # 连接池最大空闲连接
+  datasource:
+    url: jdbc:mysql://192.168.152.128:3306/test?useSSL=false&serverTimezone=UTC
+    username: root
+    password: Chen@3821
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+
+    # Druid 连接池配置
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat,wall,log4j2
+      use-global-data-source-stat: true
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+      # 监控页面配置
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin
+        login-password: admin
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+# MyBatis 配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml  # XML映射文件位置
+  type-aliases-package: com.example.mdcutilsdemo.entity  # 实体类包路径
+  configuration:
+    map-underscore-to-camel-case: true  # 自动驼峰命名转换
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 开启SQL日志
+# RocketMQ 配置
+rocketmq:
+  name-server: 192.168.152.128:9876  # NameServer 地址（根据实际修改）
+  producer:
+    group: my-group  # 生产者组名
+    send-message-timeout: 3000  # 发送超时时间(ms)
+    retry-times-when-send-failed: 2  # 失败重试次数
+  consumer:
+    group: my-group  # 消费者组名
+    message-model: CLUSTERING  # 消费模式（CLUSTERING | BROADCASTING）
+#    access-key: your-access-key  # 阿里云账号AccessKey（可选）
+#    secret-key: your-secret-key  # 阿里云账号SecretKey（可选）
+
+
