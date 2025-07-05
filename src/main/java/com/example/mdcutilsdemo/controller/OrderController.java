@@ -1,5 +1,7 @@
 package com.example.mdcutilsdemo.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.example.mdcutilsdemo.dto.OrderItemDTO;
 import com.example.mdcutilsdemo.entity.Order;
 import com.example.mdcutilsdemo.entity.OrderItem;
 import com.example.mdcutilsdemo.service.OrderService;
@@ -32,41 +34,21 @@ public class OrderController {
      * @param request 订单请求对象
      * @return 创建的订单对象
      */
-    @PostMapping
+    @PostMapping("/createOrder")
     public ResponseEntity<Order> createOrder(@RequestBody OrderRequest request) {
         log.info("收到创建订单请求: 用户ID={}, 来源={}", request.getUserId(), request.getSource());
 
         try {
             // 将DTO转换为实体
-            List<OrderItem> items = Optional.ofNullable(request.getItems())
-                    .orElse(Collections.emptyList())
-                    .stream()
-                    .map(dtoItem -> {
-                        // 验证关键字段合法性（根据业务需求调整）
-                        if (dtoItem.getProductId() == null) {
-                            throw new IllegalArgumentException("Product ID cannot be null");
-                        }
-                        if (dtoItem.getQuantity() <= 0) {
-                            throw new IllegalArgumentException("Quantity must be positive");
-                        }
-                        if (dtoItem.getPrice().signum() <= 0) { // 假设 Price 是 BigDecimal
-                            throw new IllegalArgumentException("Price must be positive");
-                        }
-
-                        return new OrderItem(
-                                dtoItem.getProductId(),
-                                dtoItem.getProductName(),
-                                dtoItem.getQuantity(),
-                                dtoItem.getPrice(),
-                                dtoItem.getSkuCode(),
-                                dtoItem.getCategory()
-                        );
-                    }).collect(Collectors.toList());;
+            List<OrderItemDTO> items = request.getItems() != null ? request.getItems() : Collections.emptyList();
+            List<OrderItem> orderItems = items.stream()
+                    .map(this::convertToOrderItem)
+                    .collect(Collectors.toList());
 
 
             Order order = orderService.createOrder(
                     request.getUserId(),
-                    items
+                    orderItems
             );
 
             log.info("订单创建成功: 订单ID={}", order.getOrderId());
@@ -145,6 +127,52 @@ public class OrderController {
             log.error("支付回调处理异常", e);
             return ResponseEntity.internalServerError().body("服务器内部错误");
         }
+    }
+
+    // 提取的私有方法：将 OrderItemDTO 转换为 OrderItem 并进行校验
+    private OrderItem convertToOrderItem(OrderItemDTO dtoItem) {
+        // 验证关键字段合法性（根据业务需求调整）
+        if (dtoItem.getProductId() == null) {
+            throw new IllegalArgumentException("Product ID cannot be null");
+        }
+        if (dtoItem.getQuantity() <= 0) {
+            throw new IllegalArgumentException("Quantity must be positive");
+        }
+        if (dtoItem.getPrice().signum() <= 0) { // 假设 Price 是 BigDecimal
+            throw new IllegalArgumentException("Price must be positive");
+        }
+        log.info("dtoItem.getProductId():{}", dtoItem.getProductId());
+
+//        OrderItem orderItem = new OrderItem();
+//        orderItem.setProductId(dtoItem.getProductId());
+//        orderItem.setProductName(dtoItem.getProductName());
+//        orderItem.setQuantity(dtoItem.getQuantity());
+//        orderItem.setPrice(dtoItem.getPrice());
+//        orderItem.setSkuCode(dtoItem.getSkuCode());
+//        orderItem.setCategory(dtoItem.getCategory());
+
+//        return orderItem;
+        OrderItem orderItem = new OrderItem(
+                dtoItem.getProductId(),
+                dtoItem.getProductName(),
+                dtoItem.getQuantity(),
+                dtoItem.getPrice(),
+                dtoItem.getSkuCode(),
+                dtoItem.getCategory()
+        );
+        log.info("orderItem.getProductId():{}", dtoItem.getProductId());
+        log.info("orderItem.getProductId():{}", orderItem.getProductId());
+        log.info("orderItem json:{}",JSON.toJSONString(orderItem));
+
+
+        return new OrderItem(
+                dtoItem.getProductId(),
+                dtoItem.getProductName(),
+                dtoItem.getQuantity(),
+                dtoItem.getPrice(),
+                dtoItem.getSkuCode(),
+                dtoItem.getCategory()
+        );
     }
 
 

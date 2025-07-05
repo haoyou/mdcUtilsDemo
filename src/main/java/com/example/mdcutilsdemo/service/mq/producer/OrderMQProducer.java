@@ -13,6 +13,12 @@ public class OrderMQProducer {
     private final RocketMQTemplate rocketMQTemplate;
 
     // 定义消息主题常量
+    /**
+     * ORDER_TOPIC：订单相关的消息主题。
+     * PAYMENT_TAG：支付业务的标签。
+     * INVENTORY_TAG：库存业务的标签。
+     * NOTIFICATION_TAG：通知业务的标签。
+     * */
     public static final String ORDER_TOPIC = "ORDER_TOPIC";
     public static final String PAYMENT_TAG = "payment";
     public static final String INVENTORY_TAG = "inventory";

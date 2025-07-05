@@ -1,6 +1,7 @@
 package com.example.mdcutilsdemo;
 
 import com.example.mdcutilsdemo.service.mq.consumer.RocketMQConsumer;
+import com.example.mdcutilsdemo.service.mq.producer.RocketMQProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,6 +14,9 @@ public class MdcUtilsDemoApplication implements CommandLineRunner {
 
     @Autowired(required = false)
     private RocketMQConsumer rocketMQConsumer;
+
+    @Autowired(required = false)
+    private RocketMQProducer rocketMQProducer;
     public static void main(String[] args) {
         SpringApplication.run(MdcUtilsDemoApplication.class, args);
     }
@@ -23,6 +27,12 @@ public class MdcUtilsDemoApplication implements CommandLineRunner {
             log.info("RocketMQ消费者已初始化");
         } else {
             log.error("RocketMQ消费者未初始化!");
+        }
+
+        if (rocketMQProducer != null){
+            log.info("RocketMQ生产者已初始化");
+        } else {
+            log.error("RocketMQ生产者未初始化!");
         }
     }
 }

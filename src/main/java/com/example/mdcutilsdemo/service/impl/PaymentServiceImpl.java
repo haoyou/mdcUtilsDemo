@@ -55,35 +55,38 @@ public class PaymentServiceImpl implements PaymentService {
 //                    .extraParams("{\"userId\":" + order.getUserId() + "}")
 //                    .build();
             // 1. 准备支付请求
-            PaymentRequest request = new PaymentRequest(
-                    order.getOrderId(),
-                    order.getOrderNo(), // 添加订单编号
-                    order.getTotalAmount(),
-                    "CNY",
-                    "订单支付 - " + order.getOrderNo(),
-                    "ALIPAY", // 默认支付宝支付
-                    "192.168.1.100", // 实际项目中应从请求中获取
-                    "https://your-domain.com/payment/callback", // 支付回调URL
-                    "https://your-domain.com/order/" + order.getOrderId(), // 支付完成返回URL
-                    "{\"userId\": " + order.getUserId() + "}" // 额外参数
-            );
+//            PaymentRequest request = new PaymentRequest(
+//                    order.getOrderId(),
+//                    order.getOrderNo(), // 添加订单编号
+//                    order.getTotalAmount(),
+//                    "CNY",
+//                    "订单支付 - " + order.getOrderNo(),
+//                    "ALIPAY", // 默认支付宝支付
+//                    "192.168.1.100", // 实际项目中应从请求中获取
+//                    "https://your-domain.com/payment/callback", // 支付回调URL
+//                    "https://your-domain.com/order/" + order.getOrderId(), // 支付完成返回URL
+//                    "{\"userId\": " + order.getUserId() + "}" // 额外参数
+//            );
+//
+//            log.debug("支付请求参数: {}", request);
+//
+//            // 2. 设置请求头
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//            headers.set("X-API-KEY", encryptedApiKey);
+//            headers.set("X-Request-Id", UUID.randomUUID().toString()); // 请求ID用于追踪
+//
+//            HttpEntity<PaymentRequest> entity = new HttpEntity<>(request, headers);
+//
+//            // 3. 发送支付请求
+//            PaymentResponse response = restTemplate.postForObject(
+//                    paymentGatewayUrl + "/payments",
+//                    entity,
+//                    PaymentResponse.class
+//            );
 
-            log.debug("支付请求参数: {}", request);
 
-            // 2. 设置请求头
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.set("X-API-KEY", encryptedApiKey);
-            headers.set("X-Request-Id", UUID.randomUUID().toString()); // 请求ID用于追踪
-
-            HttpEntity<PaymentRequest> entity = new HttpEntity<>(request, headers);
-
-            // 3. 发送支付请求
-            PaymentResponse response = restTemplate.postForObject(
-                    paymentGatewayUrl + "/payments",
-                    entity,
-                    PaymentResponse.class
-            );
+            PaymentResponse response = PaymentResponse.success("1234567890", order.getTotalAmount(), "CNY");
 
             // 2. 处理支付结果
             if (response != null && "SUCCESS".equals(response.getCode())) {
