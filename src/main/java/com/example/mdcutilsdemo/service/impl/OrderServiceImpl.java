@@ -2,6 +2,7 @@ package com.example.mdcutilsdemo.service.impl;// 文件路径: src/main/java/com
 
 import com.example.mdcutilsdemo.entity.Order;
 import com.example.mdcutilsdemo.entity.OrderItem;
+import com.example.mdcutilsdemo.mapper.OrderItemMapper;
 import com.example.mdcutilsdemo.mapper.OrderMapper;
 import com.example.mdcutilsdemo.service.OrderService;
 import com.example.mdcutilsdemo.service.mq.producer.OrderMQProducer;
@@ -18,11 +19,13 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderMapper orderMapper;
+    private final OrderItemMapper orderItemMapper;
     private final OrderMQProducer orderMQProducer;
 
     @Autowired
-    public OrderServiceImpl(OrderMapper orderMapper, OrderMQProducer orderMQProducer) {
+    public OrderServiceImpl(OrderMapper orderMapper, OrderItemMapper orderItemMapper, OrderMQProducer orderMQProducer) {
         this.orderMapper = orderMapper;
+        this.orderItemMapper = orderItemMapper;
         this.orderMQProducer = orderMQProducer;
     }
 
@@ -46,9 +49,8 @@ public class OrderServiceImpl implements OrderService {
             item.setOrderId(order.getOrderId());
         }
 
-        // 保存订单项
-        // 注意：实际项目中应有 OrderItemMapper
-        // orderItemMapper.batchInsert(items);
+         //保存订单项
+         orderItemMapper.batchInsert(items);
 
         // 发送订单创建消息
         orderMQProducer.sendOrderCreatedMessage(order);

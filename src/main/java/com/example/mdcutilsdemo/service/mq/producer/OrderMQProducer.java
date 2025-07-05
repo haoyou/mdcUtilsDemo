@@ -42,11 +42,12 @@ public class OrderMQProducer {
         sendTaggedMessage(INVENTORY_TAG, message);
         sendTaggedMessage(NOTIFICATION_TAG, message);
 
-        log.info("订单消息已发送: {}", order.getOrderId());
+        log.info("订单消息已发送！订单ID： {}", order.getOrderId());
     }
 
     private void sendTaggedMessage(String tag, String message) {
         String destination = String.format("%s:%s", ORDER_TOPIC, tag);
+        log.info("发送消息到 {}：{}", destination, message);
         rocketMQTemplate.convertAndSend(destination, message);
     }
 }
